@@ -1,4 +1,4 @@
-<img width="958" height="302" alt="image" src="https://github.com/user-attachments/assets/86ae8585-0701-462f-913e-aa1710fa2821" /># lab-azure
+
 
 
 
@@ -9,10 +9,16 @@ Install-Module Microsoft.Graph -Scope CurrentUser -Force
 # Étape 2 : Se connecter
 Connect-MgGraph -Scopes "User.ReadWrite.All"
 
+<img width="1059" height="174" alt="Capture d&#39;écran 2026-04-01 202414" src="https://github.com/user-attachments/assets/25aa2804-a1a9-432a-ab4e-e93446e84840" />
+
+
 # Étape 3 : Récupérer le domaine Azure AD
 $tenant = Get-MgOrganization
 $domain = $tenant.VerifiedDomains[0].Name
-Write-Host "Domaine Azure AD détecté : $domain" -ForegroundColor Green 
+Write-Host "Domaine Azure AD détecté : $domain" -ForegroundColor Green
+
+<img width="782" height="97" alt="Capture d&#39;écran 2026-04-01 202356" src="https://github.com/user-attachments/assets/5397c670-ed6f-460e-9442-23f00066d988" />
+
 # Étape 4 : Créer les 10 utilisateurs
 $users = @(
     @{ FirstName = "Jean"; LastName = "Dupont"; Email = "jean.dupont" },
@@ -53,9 +59,11 @@ foreach ($user in $users) {
         $errorCount++
     }
 }
-
+<img width="958" height="302" alt="image" src="https://github.com/user-attachments/assets/86ae8585-0701-462f-913e-aa1710fa2821" /># lab-azure
 # Étape 5 : Résumé
 Write-Host "`n========== RÉSUMÉ ==========" -ForegroundColor Yellow
 Write-Host "Utilisateurs créés : $createdCount" -ForegroundColor Green
 Write-Host "Erreurs : $errorCount" -ForegroundColor $(if($errorCount -gt 0) { "Red" } else { "Green" })
 Write-Host "=========================" -ForegroundColor Yellow
+
+<img width="1000" height="105" alt="Capture d&#39;écran 2026-04-01 203524" src="https://github.com/user-attachments/assets/234e9433-774b-4a50-9f9b-16c50df21efb" />
