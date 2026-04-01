@@ -67,3 +67,69 @@ Write-Host "Erreurs : $errorCount" -ForegroundColor $(if($errorCount -gt 0) { "R
 Write-Host "=========================" -ForegroundColor Yellow
 
 <img width="1000" height="105" alt="Capture d&#39;écran 2026-04-01 203524" src="https://github.com/user-attachments/assets/234e9433-774b-4a50-9f9b-16c50df21efb" />
+
+# Étape 5 : Créer les 5 groupes
+Write-Host "`n========== CRÉATION DES GROUPES ==========" -ForegroundColor Yellow
+
+$groupes = @("Comptabilité", "DSI", "RH", "Finance", "Consultant")
+$groupesCrees = @{}
+
+foreach ($groupe in $groupes) {
+    try {
+        Write-Host "Création du groupe : $groupe..." -ForegroundColor Cyan
+        
+        $newGroup = New-MgGroup -DisplayName $groupe -MailNickname ($groupe.Replace(" ", "").Replace("é", "e")) -GroupTypes "Unified" -SecurityEnabled:$false
+        
+        Write-Host "✓ Groupe $groupe créé avec succès" -ForegroundColor Green
+        
+        $groupesCrees[$groupe] = $newGroup.Id
+    }
+    catch {
+        Write-Host "✗ Erreur lors de la création du groupe $groupe : $_" -ForegroundColor Red
+    }
+}
+# Étape 6 : Ajouter les utilisateurs aux groupes
+Write-Host "`n========== AJOUT DES UTILISATEURS AUX GROUPES ==========" -ForegroundColor Yellow
+
+foreach ($user in $createdUsers) {
+    try {
+        $groupe = $user.Groupe
+        $groupId = $groupesCrees[$groupe]
+        
+        if ($groupId) {
+            Write-Host "Ajout de $($user.DisplayName) au groupe $groupe..." -ForegroundColor Cyan
+            
+            New-MgGroupMember -GroupId $groupId -DirectoryObjectId $user.Id
+            
+            Write-Host "✓ $($user.DisplayName) ajouté au groupe $groupe" -ForegroundColor Green
+        }
+    }
+    catch {
+        Write-Host "✗ Erreur lors de l'ajout de $($user.DisplayName) au groupe $groupe : $_" -ForegroundColor Red
+    }
+}
+
+# Étape 7 : Résumé
+Write-Host "`n========== RÉSUMÉ ==========" -ForegroundColor Yellow
+Write-Host "Utilisateurs créés : $createdCount" -ForegroundColor Green
+Write-Host "Groupes créés : $($groupesCrees.Count)" -ForegroundColor Green
+Write-Host "Erreurs : $errorCount" -ForegroundColor $(if($errorCount -gt 0) { "Red" } else { "Green" })
+Write-Host "=========================" -ForegroundColor Yellow
+
+<img width="1108" height="157" alt="Capture d&#39;écran 2026-04-01 210410" src="https://github.com/user-attachments/assets/a44face2-bd2e-4876-8274-cd669aca0bf8" />
+
+Ce script fait :
+
+    ✅ Crée 10 utilisateurs
+    ✅ Crée 5 groupes (Comptabilité, DSI, RH, Finance, Consultant)
+    ✅ Ajoute automatiquement chaque utilisateur au groupe correspondant
+    ✅ Affiche un résumé final
+
+Distribution des utilisateurs :
+
+    Comptabilité : Jean Dupont, Marie Martin
+    DSI : Pierre Bernard, Luc Petit
+    RH : Sophie Roche, Marc Renault
+    Finance : Antoine Lefevre, Isabelle Moreau
+    Consultant : Thomas Girard, Nathalie Laurent
+
